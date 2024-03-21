@@ -1,24 +1,19 @@
-import flask
-app = flask.Flask(__name__)
+from flask import Flask, render_template
+import render
+app = Flask(__name__)
 
 
-@app.route("/")
-@app.route("/hello")
-def hello():
-    return "Hello, World2!"
-
-
-@app.route('/data/appInfo/<name>', methods=['GET'])
-def queryDataMessageByName(name):
-    print("type(name) : ", type(name))
-    return 'String => {}'.format(name)
-
-
-@app.route('/data/appInfo/id/<int:id>', methods=['GET'])
-def queryDataMessageById(id):
-    print("type(id) : ", type(id))
-    return 'int => {}'.format(id)
+@app.route('/')
+# def index():
+#     # 在这个例子中，我们将向HTML传递一个Python列表
+#     items = ["Apple", "Banana", "Orange", "Mango"]
+#     return render_template('index.html', items=items)
+def index():
+    # username = 'John'
+    # date = '2022-01-01'
+    # items = ["Apple", "Banana", "Orange", "Mango"]
+    return render_template('index.html')
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
