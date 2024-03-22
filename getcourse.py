@@ -3,11 +3,8 @@ import numpy as np
 from util import get_num_column_dict
 from util import is_contain_chinese
 from util import getSyllabusColumns
-from datetime import datetime
-import openpyxl
-import pandas as pd
-import os
 import logging
+
 # import requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -17,16 +14,15 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 import re
-import csv
-import sys
 from selenium.webdriver.chrome.options import Options
 import logging
+
 logging.getLogger().setLevel(logging.INFO)
-logging.info('Hi!AAAAA')
-logging.error('this is errrrrr.')
+logging.info("Hi!AAAAA")
+logging.error("this is errrrrr.")
 
 
-def search_courses(year='112', semester='2', crsid="", crsclassID="", crossclass=""):
+def search_courses(year="112", semester="2", crsid="", crsclassID="", crossclass=""):
     # 開啟瀏覽器視窗(Chrome)
     # 方法一：執行前需開啟chromedriver.exe且與執行檔在同一個工作目錄
     print("start Chrome")
@@ -196,35 +192,5 @@ def search_courses(year='112', semester='2', crsid="", crsclassID="", crossclass
     return output
 
 
-if __name__ == '__main__':
-
-    search_courses(crsid='00001')
-#     while True:
-#         try:
-#             print("請輸入搜尋條件或輸入q離開...")
-
-#             year = input("學年度: ")
-#             if year == "q":
-#                 sys.exit(0)
-#             if re.match(r"^(9[5-9]|1[0-4][0-9]|150)$", year) is None:
-#                 raise ValueError("[必填欄位] 學年度錯誤(例: 112)")
-
-#             semester = input("學期: ")
-#             if semester == "q":
-#                 sys.exit(0)
-#             if re.match(r"^[1234]{1}$", semester) is None:
-#                 raise ValueError("[必填欄位] 學期錯誤(例: 1)")
-
-#             crsid = input("課程代碼(為空則查詢全部): ")
-#             if crsid == "q":
-#                 sys.exit(0)
-#             if re.match(r"^$|([A-Z0-9]{2}\d{3})$", crsid) is None:
-#                 raise ValueError("[非必填欄位] 課程代碼僅限英數字")
-#         except ValueError as err:
-#             print("輸入有誤，請檢查輸入的值")
-#             print("錯誤訊息: ", err.args)
-#             os.system("pause")
-#             continue
-#         else:
-#             break
-# search_courses(year, semester, crsid)
+if __name__ == "__main__":
+    search_courses(crsid="00001")
