@@ -1,10 +1,20 @@
+from getcourse import search_courses
+
 from flask import Flask, render_template, request, jsonify, json
+import sqlite3
 app = Flask(__name__)
+
+# 註冊路由
 
 
 @app.route('/data')
 def webapi():
-    return render_template('data.html')
+    # title = 'mytitle'
+    # res = list()
+    res = search_courses(crsid='00002')
+    title = res[0][1]
+    # render_template() 函式 : 第二個參數可以附帶資料內容
+    return render_template('data.html', title=title)
 
 
 @app.route('/data/message', methods=['GET'])
@@ -37,4 +47,4 @@ def setDataMessage():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
