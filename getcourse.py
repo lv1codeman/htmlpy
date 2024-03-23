@@ -33,7 +33,7 @@ def search_courses(
     crsnm="",
     is_all_eng="",
     is_dis_learn="",
-    crossclass="",
+    crslimit="",
     tchnm="",
     week="",
 ):
@@ -175,7 +175,7 @@ def search_courses(
                 else:
                     output[i][17] = "Y"
             elif result.get("data-th") == "可跨班：":
-                match crossclass:
+                match crslimit:
                     case "":
                         deli = 1
                         output[i][18] = result.get_text()
@@ -251,7 +251,7 @@ def selectdb(
     crsnm="",
     is_all_eng="",
     is_dis_learn="",
-    crossclass="",
+    crslimit="",
     tchnm="",
     week="",
 ):
@@ -267,9 +267,12 @@ def selectdb(
         query += f" AND 課程代碼 = '{crsid}'"
     if crsclass:
         query += f" AND 開課班別 = '{crsclass}'"
+    if crslimit:
+        query += f" AND 可跨班 = '{crslimit}'"
 
     query += f" AND 課程名稱 like '%{crsnm}%'"
     query += f" AND 教師姓名 like '%{tchnm}%'"
+
     cursor.execute(query)
     res = cursor.fetchall()
     select_res = gen_search_res(res)

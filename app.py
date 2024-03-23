@@ -14,8 +14,22 @@ def home():
 
 @app.route("/search", methods=["POST"])
 def search():
-    # return jsonify(data)
-    res = selectdb(crsclass="", tchnm="羅家玲")
+    # res = selectdb(crsclass="", tchnm="羅家玲")
+    # return jsonify(res)
+    data = request.json
+    res = selectdb(
+        year=data.get("year"),
+        semester=data.get("semester"),
+        crsclass=data.get("crsclass"),
+        week=data.get("week"),
+        is_all_eng=data.get("isAllEng"),
+        is_dis_learn=data.get("isDisLearn"),
+        crsid=data.get("crsid"),
+        crsnm=data.get("crsnm"),
+        tchnm=data.get("tchnm"),
+        crslimit=data.get("crslimit"),
+    )
+    # print(res)
     return jsonify(res)
 
 

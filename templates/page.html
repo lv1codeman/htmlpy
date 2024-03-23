@@ -13,26 +13,48 @@
     <div class="container">
         <div class="grid-container">
             <div class="grid-item">
-                <label for="dropdown1">學年度</label>
-                <select id="dropdown1">
+                <label for="year">學年度</label>
+                <select id="year">
                     <!-- 由OB010導入 -->
+                    <option value></option>
+                    <option value="113">113</option>
+                    <option value="112">112</option>
+                    <option value="111">111</option>
+                    <option value="110">110</option>
+                    <option value="109">109</option>
+                    <option value="108">108</option>
+                    <option value="107">107</option>
                 </select>
             </div>
             <div class="grid-item">
-                <label for="dropdown2">學期</label>
-                <select id="dropdown2">
+                <label for="semester">學期</label>
+                <select id="semester">
                     <!-- 由OB010導入 -->
+                    <option value></option>
+                    <option value="2">2</option>
+                    <option value="1">1</option>
                 </select>
             </div>
             <div class="grid-item">
-                <label for="dropdown3">開課班別</label>
-                <select id="dropdown3">
+                <label for="crsclass">開課班別</label>
+                <select id="crsclass">
                     <!-- 由OB010導入 -->
+                    <option value></option>
                 </select>
             </div>
             <div class="grid-item">
-                <label for="dropdown4">上課時間</label>
-                <select id="dropdown4">
+                <label for="crslimit">可跨班系</label>
+                <select id="crslimit">
+                    <!-- 由OB010導入 -->
+                    <option value></option>
+                    <option value="限本班">限本班</option>
+                    <option value="限本系">限本系</option>
+                    <option value="可跨班系">可跨班系</option>
+                </select>
+            </div>
+            <div class="grid-item">
+                <label for="week">上課時間</label>
+                <select id="week">
                     <option value></option>
                     <option value="1">星期一</option>
                     <option value="1">星期一</option>
@@ -45,31 +67,31 @@
                 </select>
             </div>
             <div class="grid-item">
-                <label for="dropdown5">全英語授課</label>
-                <select id="dropdown5">
+                <label for="isAllEng">全英語授課</label>
+                <select id="isAllEng">
                     <option value></option>
                     <option value="option1">是</option>
                     <option value="option2">否</option>
                 </select>
             </div>
             <div class="grid-item">
-                <label for="dropdown6">遠距課程</label>
-                <select id="dropdown6">
+                <label for="isDisLearn">遠距課程</label>
+                <select id="isDisLearn">
                     <option value></option>
                     <option value="option1">是</option>
                     <option value="option2">否</option>
                 </select>
             </div>
             <div class="grid-item">
-                <label for="input1">課程代碼</label>
+                <label for="crsid">課程代碼</label>
                 <input type="text" id="crsid">
             </div>
             <div class="grid-item">
-                <label for="input2">課程名稱</label>
+                <label for="crsnm">課程名稱</label>
                 <input type="text" id="crsnm">
             </div>
             <div class="grid-item">
-                <label for="input3">教師姓名</label>
+                <label for="tchnm">教師姓名</label>
                 <input type="text" id="tchnm">
             </div>
         </div>
@@ -106,18 +128,29 @@
         </table>
         <script>
             $(document).ready(function () {
-                var dataJSON = {};
-                dataJSON["Device"] = "iPhone";
-                dataJSON["Company"] = "Apple";
                 $('#resultTable').hide()
                 $('#clearBtn').click(function () {
                     $('#resultTable').hide()
                 });
                 $('#searchBtn').click(function () {
+                    var dataJSON = {};
+                    dataJSON["year"] = $('#year').find(':selected').text();
+                    dataJSON["semester"] = $('#semester').find(':selected').text();
+                    dataJSON["crsclass"] = $('#crsclass').find(':selected').text();
+                    dataJSON["crslimit"] = $('#crslimit').find(':selected').text();
+                    dataJSON["week"] = $('#week').find(':selected').text();
+                    dataJSON["isAllEng"] = $('#isAllEng').find(':selected').text();
+                    dataJSON["isDisLearn"] = $('#isDisLearn').find(':selected').text();
+                    dataJSON["crsid"] = $('#crsid').val();
+                    dataJSON["crsnm"] = $('#crsnm').val();
+                    dataJSON["tchnm"] = $('#tchnm').val();
                     $('#resultTable').show()
                     $.ajax({
                         url: '/search',
                         type: 'POST',
+                        data: JSON.stringify(dataJSON),
+                        dataType: "json",
+                        contentType: "application/json;charset=utf-8",
                         success: function (data) {
                             var tableBody = $('#resultTable tbody');
                             tableBody.empty();
