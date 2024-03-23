@@ -12,12 +12,17 @@ def home():
     return render_template("index.html")
 
 
-@app.route("/data")
+@app.route("/00")
 def webapi():
     # title = 'mytitle'
     # res = list()
     res = search_courses(crsid="00002")
+    conn = sqlite3.connect("./OB010.db")  # ~代表路徑
+    c = conn.cursor()
+    # c.execute('insert into COURSES(title, price) values (?, ?)', values)
+
     title = res[0][1]
+
     # render_template() 函式 : 第二個參數可以附帶資料內容
     return render_template("data.html", title=title)
 
@@ -52,5 +57,5 @@ def setDataMessage():
 
 
 if __name__ == "__main__":
-    serve(app, host="127.0.0.1", port=8070)
+    serve(app, host="127.0.0.1", port=5000)
     # app.run(debug=True)

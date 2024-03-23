@@ -187,10 +187,52 @@ def search_courses(year="112", semester="2", crsid="", crsclassID="", crossclass
     # 首欄不為0者才存入output等待輸出
     output = [row for row in output if row[0] != 0]
     print("Total output:", len(output), "rows.")
-    print(type(output))
+    # print(output)
 
     return output
 
 
+import sqlite3
+
 if __name__ == "__main__":
-    search_courses(crsid="00001")
+    res = search_courses(crsid="00001")
+    list_A = res
+
+    keys = [
+        "課程代碼",
+        "開課班別",
+        "課程名稱",
+        "課程名稱英文",
+        "教學大綱",
+        "教學大綱英文",
+        "是否有教學大綱",
+        "課程性質",
+        "課程性質2",
+        "全英語授課",
+        "學分",
+        "教師姓名",
+        "上課大樓",
+        "上課教室",
+        "上限人數",
+        "登記人數",
+        "選上人數",
+        "符合開課人數",
+        "可跨班",
+        "備註",
+    ]
+    search_result = {key: value for key, value in zip(keys, list_A[0])}
+    print(search_result)
+
+    conn = sqlite3.connect("courses.db")
+    cursor = conn.cursor()
+    insert_command = """
+    INSERT INTO COURSES VALUES (
+        :課程代碼, :開課班別, :課程名稱, :課程名稱英文, :教學大綱, :教學大綱英文,
+        :是否有教學大綱, :課程性質, :課程性質2, :全英語授課, :學分, :教師姓名,
+        :上課大樓, :上課教室, :上限人數, :登記人數, :選上人數, :符合開課人數,
+        :可跨班, :備註
+    );
+    """
+    cursor.execute(insert_command, search_result)
+    conn.commit()
+    conn.close()
