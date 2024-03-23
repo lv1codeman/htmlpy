@@ -12,10 +12,16 @@ def home():
     return render_template("page.html")
 
 
+@app.route("/getdata", methods=["POST"])
+def getdata():
+    deleteTable()
+    load_allcrs_into_db()
+    return "done"
+
+
 @app.route("/search", methods=["POST"])
 def search():
-    # res = selectdb(crsclass="", tchnm="羅家玲")
-    # return jsonify(res)
+
     data = request.json
     res = selectdb(
         year=data.get("year"),
@@ -29,7 +35,6 @@ def search():
         tchnm=data.get("tchnm"),
         crslimit=data.get("crslimit"),
     )
-    # print(res)
     return jsonify(res)
 
 

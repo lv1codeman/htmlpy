@@ -44,7 +44,6 @@ def search_courses(
     chrome_options.add_argument("--headless")
     driver = webdriver.Chrome(options=chrome_options)
     driver.get("http://webapt.ncue.edu.tw/DEANV2/Other/ob010")
-    print("END Chrome")
 
     # 指定條件區的輸入
     # 指定學年度<select>
@@ -95,6 +94,8 @@ def search_courses(
 
         html = driver.page_source
         driver.close()  # 關閉瀏覽器
+        print("END Chrome")
+
         soup = BeautifulSoup(html, "html.parser")
 
         results = soup.find(id="result")
@@ -219,11 +220,9 @@ def search_courses(
     return output
 
 
-conn = sqlite3.connect("courses.db")
-cursor = conn.cursor()
-
-
 def load_allcrs_into_db():
+    conn = sqlite3.connect("courses.db")
+    cursor = conn.cursor()
     res = search_courses()
     search_res = gen_search_res(res)
 
@@ -269,6 +268,12 @@ def selectdb(
         query += f" AND 開課班別 = '{crsclass}'"
     if crslimit:
         query += f" AND 可跨班 = '{crslimit}'"
+    if is_all_eng:
+        query += f" AND 全英語授課 = '{is_all_eng}'"
+    if is_dis_learn == "是":
+        query += f" AND 備註 like '%遠距課程%'"
+    if is_dis_learn == "否":
+        query += f" AND 備註 not like '%遠距課程%'"
 
     query += f" AND 課程名稱 like '%{crsnm}%'"
     query += f" AND 教師姓名 like '%{tchnm}%'"
@@ -282,7 +287,9 @@ def selectdb(
 
 
 def deleteTable(tablenm="COURSES"):
-    query = f"DELETE FROM COURSES;"
+    conn = sqlite3.connect("courses.db")
+    cursor = conn.cursor()
+    query = f"DELETE FROM " + tablenm + ";"
     cursor.execute(query)
     conn.commit()
     conn.close()
