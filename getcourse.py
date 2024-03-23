@@ -1,9 +1,12 @@
 # 載入需要的套件
 import numpy as np
-from util import get_num_column_dict
-from util import is_contain_chinese
-from util import getSyllabusColumns
-import logging
+from util import (
+    get_num_column_dict,
+    is_contain_chinese,
+    getSyllabusColumns,
+    gen_search_res,
+)
+import sqlite3
 
 # import requests
 from bs4 import BeautifulSoup
@@ -18,11 +21,22 @@ from selenium.webdriver.chrome.options import Options
 import logging
 
 logging.getLogger().setLevel(logging.INFO)
-logging.info("Hi!AAAAA")
-logging.error("this is errrrrr.")
+logging.info("search_courses start...")
+# logging.error("this is errrrrr.")
 
 
-def search_courses(year="112", semester="2", crsid="", crsclassID="", crossclass=""):
+def search_courses(
+    year="112",
+    semester="2",
+    crsid="",
+    crsclassID="",
+    crsnm="",
+    is_all_eng="",
+    is_dis_learn="",
+    crossclass="",
+    tchnm="",
+    week="",
+):
     # 開啟瀏覽器視窗(Chrome)
     # 方法一：執行前需開啟chromedriver.exe且與執行檔在同一個工作目錄
     print("start Chrome")
@@ -46,6 +60,19 @@ def search_courses(year="112", semester="2", crsid="", crsclassID="", crossclass
     if len(crsid) == 5:
         select_element = driver.find_element(By.ID, "scr_selcode")
         select_element.send_keys(crsid)
+
+    select_element = driver.find_element(By.ID, "sub_name")
+    select_element.send_keys(crsnm)
+
+    select_element = driver.find_element(By.ID, "emp_name")
+    select_element.send_keys(tchnm)
+
+    select = Select(driver.find_element(By.ID, "ddl_cls_type"))
+    select.select_by_value(is_all_eng)
+    select = Select(driver.find_element(By.ID, "ddl_SCR_IS_DIS_LEARN"))
+    select.select_by_value(is_dis_learn)
+    select = Select(driver.find_element(By.ID, "ddl_sct_week"))
+    select.select_by_value(week)
 
     # 指定修課班別<select>
     select = Select(driver.find_element(By.ID, "ddl_scj_cls_id"))
@@ -192,39 +219,14 @@ def search_courses(year="112", semester="2", crsid="", crsclassID="", crossclass
     return output
 
 
-import sqlite3
+conn = sqlite3.connect("courses.db")
+cursor = conn.cursor()
 
-if __name__ == "__main__":
-    res = search_courses(crsid="00001")
-    list_A = res
 
-    keys = [
-        "課程代碼",
-        "開課班別",
-        "課程名稱",
-        "課程名稱英文",
-        "教學大綱",
-        "教學大綱英文",
-        "是否有教學大綱",
-        "課程性質",
-        "課程性質2",
-        "全英語授課",
-        "學分",
-        "教師姓名",
-        "上課大樓",
-        "上課教室",
-        "上限人數",
-        "登記人數",
-        "選上人數",
-        "符合開課人數",
-        "可跨班",
-        "備註",
-    ]
-    search_result = {key: value for key, value in zip(keys, list_A[0])}
-    print(search_result)
+def load_allcrs_into_db():
+    res = search_courses()
+    search_res = gen_search_res(res)
 
-    conn = sqlite3.connect("courses.db")
-    cursor = conn.cursor()
     insert_command = """
     INSERT INTO COURSES VALUES (
         :課程代碼, :開課班別, :課程名稱, :課程名稱英文, :教學大綱, :教學大綱英文,
@@ -233,6 +235,59 @@ if __name__ == "__main__":
         :可跨班, :備註
     );
     """
-    cursor.execute(insert_command, search_result)
+
+    for item in search_res:
+        cursor.execute(insert_command, item)
+
     conn.commit()
     conn.close()
+
+
+def selectdb(
+    year="112",
+    semester="2",
+    crsid="",
+    crsclass="",
+    crsnm="",
+    is_all_eng="",
+    is_dis_learn="",
+    crossclass="",
+    tchnm="",
+    week="",
+):
+
+    conn = sqlite3.connect("courses.db")
+    cursor = conn.cursor()
+    query = """
+        SELECT * FROM COURSES
+        WHERE 1=1
+    """
+
+    if crsid:
+        query += f" AND 課程代碼 = '{crsid}'"
+    if crsclass:
+        query += f" AND 開課班別 = '{crsclass}'"
+
+    query += f" AND 課程名稱 like '%{crsnm}%'"
+    query += f" AND 教師姓名 like '%{tchnm}%'"
+    cursor.execute(query)
+    res = cursor.fetchall()
+    select_res = gen_search_res(res)
+    conn.commit()
+    conn.close()
+    return select_res
+
+
+def deleteTable(tablenm="COURSES"):
+    query = f"DELETE FROM COURSES;"
+    cursor.execute(query)
+    conn.commit()
+    conn.close()
+
+
+if __name__ == "__main__":
+    # res = search_courses(is_all_eng="Y", week="2")
+    # print(res)
+    # load_allcrs_into_db()
+    # deleteTable(tablenm="COURSES")
+    selectdb()

@@ -3,36 +3,157 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Template - Page</title>
+    <title>Search Page</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="../static/css/style.css">
 </head>
 
 <body>
-    <h1>Template - Page </h1>
-    <h2>{{text}}</h2>
+    <div class="container">
+        <div class="grid-container">
+            <div class="grid-item">
+                <label for="dropdown1">學年度</label>
+                <select id="dropdown1">
+                    <!-- 由OB010導入 -->
+                </select>
+            </div>
+            <div class="grid-item">
+                <label for="dropdown2">學期</label>
+                <select id="dropdown2">
+                    <!-- 由OB010導入 -->
+                </select>
+            </div>
+            <div class="grid-item">
+                <label for="dropdown3">開課班別</label>
+                <select id="dropdown3">
+                    <!-- 由OB010導入 -->
+                </select>
+            </div>
+            <div class="grid-item">
+                <label for="dropdown4">上課時間</label>
+                <select id="dropdown4">
+                    <option value></option>
+                    <option value="1">星期一</option>
+                    <option value="1">星期一</option>
+                    <option value="2">星期二</option>
+                    <option value="3">星期三</option>
+                    <option value="4">星期四</option>
+                    <option value="5">星期五</option>
+                    <option value="6">星期六</option>
 
-    {% if appInfo != undefined %}
-
-    <h2>AppInfo : </h2>
-    <p>id : {{appInfo.id}}</p>
-    <p>name : {{appInfo.name}}</p>
-    <p>version : {{appInfo.version}}</p>
-    <p>author : {{appInfo.author}}</p>
-    <p>remark : {{appInfo.remark}}</p>
-    {% endif %}
-
-    {% if data != undefined %}
-    <h2>Data : </h2>
-    <table border="1">
-        {% for key, value in data.items() %}
-        <tr>
-            <th> {{ key }} </th>
-            <td> {{ value }} </td>
-        </tr>
-        {% endfor %}
-    </table>
-    {% endif %}
+                </select>
+            </div>
+            <div class="grid-item">
+                <label for="dropdown5">全英語授課</label>
+                <select id="dropdown5">
+                    <option value></option>
+                    <option value="option1">是</option>
+                    <option value="option2">否</option>
+                </select>
+            </div>
+            <div class="grid-item">
+                <label for="dropdown6">遠距課程</label>
+                <select id="dropdown6">
+                    <option value></option>
+                    <option value="option1">是</option>
+                    <option value="option2">否</option>
+                </select>
+            </div>
+            <div class="grid-item">
+                <label for="input1">課程代碼</label>
+                <input type="text" id="crsid">
+            </div>
+            <div class="grid-item">
+                <label for="input2">課程名稱</label>
+                <input type="text" id="crsnm">
+            </div>
+            <div class="grid-item">
+                <label for="input3">教師姓名</label>
+                <input type="text" id="tchnm">
+            </div>
+        </div>
+        <button id="searchBtn">Search</button>
+        <button id="clearBtn">Clear</button>
+        <table id="resultTable">
+            <thead>
+                <tr>
+                    <th>課程代碼</th>
+                    <th>開課班別</th>
+                    <th>課程名稱</th>
+                    <th>課程名稱英文</th>
+                    <th>教學大綱</th>
+                    <th>教學大綱英文</th>
+                    <th>是否有教學大綱</th>
+                    <th>課程性質</th>
+                    <th>課程性質2</th>
+                    <th>全英語授課</th>
+                    <th>學分</th>
+                    <th>教師姓名</th>
+                    <th>上課大樓</th>
+                    <th>上課教室</th>
+                    <th>上限人數</th>
+                    <th>登記人數</th>
+                    <th>選上人數</th>
+                    <th>符合開課人數</th>
+                    <th>可跨班</th>
+                    <th>備註</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Dynamic content will be added here -->
+            </tbody>
+        </table>
+        <script>
+            $(document).ready(function () {
+                var dataJSON = {};
+                dataJSON["Device"] = "iPhone";
+                dataJSON["Company"] = "Apple";
+                $('#resultTable').hide()
+                $('#clearBtn').click(function () {
+                    $('#resultTable').hide()
+                });
+                $('#searchBtn').click(function () {
+                    $('#resultTable').show()
+                    $.ajax({
+                        url: '/search',
+                        type: 'POST',
+                        success: function (data) {
+                            var tableBody = $('#resultTable tbody');
+                            tableBody.empty();
+                            console.log(data)
+                            data.forEach(function (item) {
+                                var row =
+                                    '<tr>' +
+                                    '<td>' + item['課程代碼'] + '</td>' +
+                                    '<td>' + item['開課班別'] + '</td>' +
+                                    '<td>' + item['課程名稱'] + '</td>' +
+                                    '<td>' + item['課程名稱英文'] + '</td>' +
+                                    '<td>' + item['教學大綱'] + '</td>' +
+                                    '<td>' + item['教學大綱英文'] + '</td>' +
+                                    '<td>' + item['是否有教學大綱'] + '</td>' +
+                                    '<td>' + item['課程性質'] + '</td>' +
+                                    '<td>' + item['課程性質2'] + '</td>' +
+                                    '<td>' + item['全英語授課'] + '</td>' +
+                                    '<td>' + item['學分'] + '</td>' +
+                                    '<td>' + item['教師姓名'] + '</td>' +
+                                    '<td>' + item['上課大樓'] + '</td>' +
+                                    '<td>' + item['上課教室'] + '</td>' +
+                                    '<td>' + item['上限人數'] + '</td>' +
+                                    '<td>' + item['登記人數'] + '</td>' +
+                                    '<td>' + item['選上人數'] + '</td>' +
+                                    '<td>' + item['符合開課人數'] + '</td>' +
+                                    '<td>' + item['可跨班'] + '</td>' +
+                                    '<td>' + item['備註'] + '</td>' +
+                                    '</tr>';
+                                tableBody.append(row);
+                            });
+                        }
+                    });
+                });
+            });
+        </script>
+    </div>
 </body>
 
 </html>
