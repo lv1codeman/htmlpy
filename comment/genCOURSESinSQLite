@@ -1,0 +1,21 @@
+        # # 定義資料表的CREATE TABLE指令
+        # create_table_sql = """CREATE TABLE IF NOT EXISTS courses (
+        #     序號 TEXT PRIMARY KEY,
+        #     課程代碼 TEXT,
+        #     開課班別 TEXT,
+        #     課程名稱 TEXT,
+        #     教學大綱Syllabus TEXT,
+        #     課程性質 TEXT,
+        #     課程性質2 TEXT,
+        #     全英語授課 TEXT,
+        #     學分 TEXT,
+        #     教師姓名 TEXT,
+        #     上課大樓 TEXT,
+        #     上課節次地點 TEXT,
+        #     上限人數 TEXT,
+        #     登記人數 TEXT,
+        #     選上人數 TEXT,
+        #     可跨班 TEXT,
+        #     備註 TEXT
+        # );"""
+        # c.execute(create_table_sql)

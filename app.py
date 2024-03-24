@@ -14,6 +14,7 @@ def home():
 
 @app.route("/getdata", methods=["POST"])
 def getdata():
+
     deleteTable()
     load_allcrs_into_db()
     return "done"

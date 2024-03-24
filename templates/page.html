@@ -143,11 +143,20 @@
                 });
 
                 $('#gatherBtn').click(function () {
+                    $('*').css('cursor', 'wait');
+                    $('*').css('pointer-events', 'none');
+                    $('#hint').text('正在從OB010讀取資料(約需15秒左右等待時間)...');
+                    $('#hint').css('color', 'orange');
                     console.log('start gathering data...')
                     $.ajax({
                         url: '/getdata',
                         type: 'POST',
                         success: function (data) {
+                            $('*').css('cursor', 'auto');
+                            $('*').css('pointer-events', 'auto');
+                            $('button').css('cursor', 'pointer');
+                            $('#hint').css('color', 'green');
+                            $('#hint').text('已從OB010讀取所有課程。');
                             console.log(data + ' 已從OB010讀取所有課程。')
                         }
                     });
