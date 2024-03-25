@@ -1,4 +1,4 @@
-from getcourse_aiohttp2 import load_into_db, selectdb, deleteTable
+from getcourse import search_courses, load_allcrs_into_db, selectdb, deleteTable
 from waitress import serve
 from flask import Flask, render_template, request, jsonify, json
 import sqlite3
@@ -14,8 +14,9 @@ def home():
 
 @app.route("/getdata", methods=["POST"])
 def getdata():
+
     deleteTable()
-    load_into_db()
+    load_allcrs_into_db()
     return "done"
 
 
