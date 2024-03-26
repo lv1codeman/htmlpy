@@ -108,7 +108,7 @@ if __name__ == "__main__":
     # asyncio.run(load_into_db(year="112", semester="1"))
     select_res = asyncio.run(selectdb())
 
-    print(select_res[0])
+    # print(select_res[0])
 
     end_time = time.time()  # 記錄結束時間
     print("Execution time: {:.2f} seconds".format(

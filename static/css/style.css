@@ -45,7 +45,7 @@ th,
 td {
   padding: 8px;
   border: 1px solid #ddd;
-  text-align: left;
+  text-align: center;
 }
 
 th {
@@ -53,26 +53,28 @@ th {
   text-align: center;
 }
 
+th:nth-child(1),
 th:nth-child(7) {
-  width: 3rem;
+  width: 3.5rem;
 }
 
-th:nth-child(1),
+
 th:nth-child(2),
+th:nth-child(3),
 th:nth-child(4),
 th:nth-child(5),
-th:nth-child(8),
+th:nth-child(6),
+th:nth-child(7),
 th:nth-child(9),
 th:nth-child(10),
 th:nth-child(11),
 th:nth-child(12),
 th:nth-child(13),
-th:nth-child(14),
-th:nth-child(6) {
+th:nth-child(14) {
   width: 6rem;
 }
 
-th:nth-child(3) {
+th:nth-child(4) {
   width: 10rem;
 }
 

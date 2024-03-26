@@ -53,7 +53,7 @@ async def search():
         tchnm=data.get("tchnm"),
         crslimit=data.get("crslimit"),
     )
-    print(res)
+    # print(res)
     return jsonify(res)
 
 
