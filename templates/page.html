@@ -134,6 +134,16 @@
         </table>
         <script>
             $(document).ready(function () {
+                $.ajax({
+                    url: '/data',
+                    type: 'GET',
+                    success: function (response) {
+                        $('#result').text(response.message);
+                    },
+                    error: function (error) {
+                        console.log(error);
+                    }
+                });
                 $('#resultTable').hide()
                 $('#clearBtn').click(function () {
                     $('#resultTable').hide();

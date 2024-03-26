@@ -14,8 +14,7 @@ async def load_into_db(year="112", semester="2"):
         data=f"sel_cls_branch=D&sel_scr_english=&sel_SCR_IS_DIS_LEARN=&sel_yms_year={year}&sel_yms_smester={semester}&scr_selcode=&sel_cls_id=&sel_sct_week=&sub_name=&emp_name=&X-Requested-With=XMLHttpRequest",
     ) as day_course_response:
         html_data = await day_course_response.text()
-        day_course_rows = BeautifulSoup(
-            html_data, "html.parser").find_all("tr")
+        day_course_rows = BeautifulSoup(html_data, "html.parser").find_all("tr")
 
         # 提取表格頭（th）和數據（columns）
         th_row = day_course_rows[0].find_all("th")
@@ -88,8 +87,9 @@ async def selectdb(
 
     cursor.execute(query)
     res = cursor.fetchall()
-    print(res)
+
     select_res = gen_search_res(res)
+    print(select_res)
     conn.commit()
     conn.close()
     return select_res
@@ -125,5 +125,6 @@ if __name__ == "__main__":
     # print(select_res[0])
 
     end_time = time.time()  # 記錄結束時間
-    print("Execution time: {:.2f} seconds".format(
-        end_time - start_time))  # 顯示執行時間
+    print(
+        "Execution time: {:.2f} seconds".format(end_time - start_time)
+    )  # 顯示執行時間

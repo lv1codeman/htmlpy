@@ -41,15 +41,19 @@ def gen_search_res_forgetcourse(res):
     # search_res: 把每筆re加入search_res這個list，做成一個dict array
     search_res = []
     for res_each in range(0, len(res)):
-        search_res_each = {key: value for key,
-                           value in zip(keys, res[res_each])}
+        search_res_each = {key: value for key, value in zip(keys, res[res_each])}
         search_res.append(search_res_each)
     return search_res
 
 
 def gen_search_res(res):
+    """
+    keys的順序必須和DB內的欄位順序一樣
+    """
     keys = [
         "查詢序號",
+        "學年度",
+        "學期",
         "序號",
         "課程代碼",
         "開課班別",
@@ -73,8 +77,7 @@ def gen_search_res(res):
     # search_res: 把每筆re加入search_res這個list，做成一個dict array
     search_res = []
     for res_each in range(0, len(res)):
-        search_res_each = {key: value for key,
-                           value in zip(keys, res[res_each])}
+        search_res_each = {key: value for key, value in zip(keys, res[res_each])}
         search_res.append(search_res_each)
     return search_res
 
@@ -110,8 +113,7 @@ def getSyllabusColumns(result, hasCHT, hasENG):
             output[1] = result.find("a").text.strip()
         else:
             output[0] = result.find("a").text.strip()
-            output[1] = result.find(
-                "a").next_sibling.next_sibling.next_sibling.strip()
+            output[1] = result.find("a").next_sibling.next_sibling.next_sibling.strip()
     return output
 
 

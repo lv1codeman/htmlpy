@@ -5,6 +5,7 @@ import sqlite3
 import aiohttp
 import asyncio
 import time
+
 app = Flask(__name__)
 
 
@@ -12,6 +13,7 @@ async def process_data(data):
     # 模拟异步处理数据
     await asyncio.sleep(1)
     return {"message": "Data processed successfully", "data": data}
+
 
 # 註冊路由
 
@@ -21,17 +23,22 @@ def home():
     return render_template("search_course.html")
 
 
-@app.route("/getYS", methods=["POST"])
+@app.route("/getYS")
 async def getYS():
-    print("getYS")
     res = await selectdb1()
     return jsonify(res)
 
 
+# @app.route('/data')
+# def get_data():
+#     data = {'message': 'Hello from Flask!'}
+#     return jsonify(data)
+
+
 @app.route("/getdata", methods=["POST"])
 async def getdata():
-    year = request.json.get('year')
-    semester = request.json.get('semester')
+    year = request.json.get("year")
+    semester = request.json.get("semester")
     print(f"start loading: year = {year}, semester = {semester}")
 
     start_time = time.time()  # 記錄開始時間
@@ -39,10 +46,16 @@ async def getdata():
     await load_into_db(year=year, semester=semester)
     end_time = time.time()  # 記錄結束時間
     exetime = round(end_time - start_time, 2)
-    print("load_into_db Execution time: {:.2f} seconds".format(
-        exetime))  # 顯示執行時間
+    print("load_into_db Execution time: {:.2f} seconds".format(exetime))  # 顯示執行時間
 
-    return jsonify({"message": "執行成功", "executeTime": exetime, "year": year, "semester": semester})
+    return jsonify(
+        {
+            "message": "執行成功",
+            "executeTime": exetime,
+            "year": year,
+            "semester": semester,
+        }
+    )
 
 
 @app.route("/search", methods=["POST"])
