@@ -38,7 +38,7 @@
         </select>
       </div>
       <div class="grid-item">
-        <label id="dataTimeIndicator" for="gatherBtn">目前資料為112-2</label>
+        <label id="dataTimeIndicator">目前資料為112-2</label>
         <button class="btn btn-primary" id="gatherBtn">取得課程資料</button>
       </div>
       <div class="separator"></div>
@@ -163,13 +163,13 @@
             contentType: "application/json; charset=utf-8", // 指定请求内容类型为JSON
             dataType: "json", // 指定响应数据类型为JSON
             success: function (data) {
-              console.log(data.message);
+              console.log(data.message + data.executeTime);
               $('*').css('cursor', 'auto');
               $('*').css('pointer-events', 'auto');
               $('button').css('cursor', 'pointer');
               $('#hint').css('color', 'green');
-              $('#hint').text('已從OB010讀取所有課程。');
-              console.log(' 已從OB010讀取所有課程。')
+              $('#hint').text('已從OB010讀取所有課程，共花費' + data.executeTime + '秒。');
+              console.log(' 已從OB010讀取所有課程，共花費' + data.executeTime + '秒。');
 
 
               $('#dataTimeIndicator').text('目前資料為' + year + '-' + semester);
@@ -201,8 +201,13 @@
             success: function (data) {
               var tableBody = $('#resultTable tbody');
               tableBody.empty();
-              console.log(data)
-              $('#hint').text('共有' + data.length + '筆');
+              if (data.length == 0) {
+                $('#hint').css('color', 'orange');
+                $('#hint').text('查無課程資料');
+              } else {
+                $('#hint').css('color', 'green');
+                $('#hint').text('共有' + data.length + '筆');
+              }
               data.forEach(function (item) {
                 var row =
                   '<tr>' +

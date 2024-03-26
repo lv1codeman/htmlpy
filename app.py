@@ -25,16 +25,17 @@ def home():
 async def getdata():
     year = request.json.get('year')
     semester = request.json.get('semester')
-    print(f"get json: year = {year}, semester = {semester}")
+    print(f"start loading: year = {year}, semester = {semester}")
 
     start_time = time.time()  # 記錄開始時間
     await deleteTable()
     await load_into_db(year=year, semester=semester)
     end_time = time.time()  # 記錄結束時間
+    exetime = round(end_time - start_time, 2)
     print("load_into_db Execution time: {:.2f} seconds".format(
-        end_time - start_time))  # 顯示執行時間
+        exetime))  # 顯示執行時間
 
-    return jsonify({"message": "執行成功", "year": year, "semester": semester})
+    return jsonify({"message": "執行成功", "executeTime": exetime, "year": year, "semester": semester})
 
 
 @app.route("/search", methods=["POST"])
@@ -56,13 +57,17 @@ async def search():
     return jsonify(res)
 
 
-# @app.route("/00")
-# def webapi():
-#     load_allcrs_into_db()
-
-#     # render_template() 函式 : 第二個參數可以附帶資料內容
 #     return render_template("data.html", title=title)
 
 if __name__ == "__main__":
     serve(app, host="127.0.0.1", port=5000)
-    # app.run(debug=True)
+
+    # A funny dot printer...
+    # while True:
+    #     content = 'loading'
+    #     dotnum = 5
+    #     print(content, end='')
+    #     for i in range(dotnum):
+    #         print(".", end='', flush=True)
+    #         time.sleep(1)
+    #     print('\r'+' '*(dotnum+len(content))+'\r', end='')
