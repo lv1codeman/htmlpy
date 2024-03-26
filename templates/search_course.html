@@ -141,15 +141,17 @@
           url: '/getYS',
           type: 'GET',
           success: function (data) {
+            // 透過後端的/getYS執行selectdb1，搜尋DB中的第一筆資料，以它的學年度學期，設定前端網頁的學年度學期
             $('#dataTimeIndicator').text('目前資料為' + data.year + '-' + data.semester);
+            $("#year option:contains(" + data.year + ")").attr('selected', 'selected');
+            $("#semester option:contains(" + data.semester + ")").attr('selected', 'selected');
             console.log('目前資料為' + data.year + '-' + data.semester);
           },
-          error: function (error) {
-            console.log(error);
+          error: function (xhr, status, error) {
+            var errorMessage = xhr.status + ': ' + xhr.statusText;
+            $('#result').text('Error: ' + errorMessage);
           }
         });
-
-
 
         $('#resultTable').hide()
         $('#clearBtn').click(function () {
@@ -184,12 +186,11 @@
               $('#hint').css('color', 'green');
               $('#hint').text('已從OB010讀取所有課程，共花費' + data.executeTime + '秒。');
               console.log(' 已從OB010讀取所有課程，共花費' + data.executeTime + '秒。');
-
-
               $('#dataTimeIndicator').text('目前資料為' + year + '-' + semester);
             },
             error: function (xhr, status, error) {
-              console.error('SIXER-Error:', error);
+              var errorMessage = xhr.status + ': ' + xhr.statusText;
+              $('#result').text('Error: ' + errorMessage);
             }
           });
         });
@@ -245,6 +246,10 @@
                   '</tr>';
                 tableBody.append(row);
               });
+            },
+            error: function (xhr, status, error) {
+              var errorMessage = xhr.status + ': ' + xhr.statusText;
+              $('#result').text('Error: ' + errorMessage);
             }
           });
         });

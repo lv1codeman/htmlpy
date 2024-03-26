@@ -89,7 +89,7 @@ async def selectdb(
     res = cursor.fetchall()
 
     select_res = gen_search_res(res)
-    print(select_res)
+    # print(select_res)
     conn.commit()
     conn.close()
     return select_res
