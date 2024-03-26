@@ -1,4 +1,4 @@
-from getcourse_aiohttp2 import load_into_db, selectdb, deleteTable
+from getcourse_aiohttp2 import load_into_db, selectdb, deleteTable, selectdb1
 from waitress import serve
 from flask import Flask, render_template, request, jsonify, json, Response
 import sqlite3
@@ -19,6 +19,13 @@ async def process_data(data):
 @app.route("/")
 def home():
     return render_template("search_course.html")
+
+
+@app.route("/getYS", methods=["POST"])
+async def getYS():
+    print("getYS")
+    res = await selectdb1()
+    return jsonify(res)
 
 
 @app.route("/getdata", methods=["POST"])

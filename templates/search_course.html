@@ -137,6 +137,21 @@
     </table>
     <script>
       $(document).ready(function () {
+        $.ajax({
+          url: '/getYS',
+          type: 'GET',
+          dataType: "json", // 指定响应数据类型为JSON
+          success: function (data) {
+            console.log('get on page load.')
+            $('#dataTimeIndicator').text('目前資料為2' + data.year + '-' + data.semester);
+          },
+          error: function (xhr, status, error) {
+            console.error('SIXER-Error:', error);
+          }
+        });
+
+
+
         $('#resultTable').hide()
         $('#clearBtn').click(function () {
           $('#resultTable').hide();

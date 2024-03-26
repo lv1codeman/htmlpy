@@ -40,6 +40,8 @@ async def load_into_db(year="112", semester="2"):
             insert_sql = f"INSERT INTO courses ({columns}) VALUES ({placeholders})"
             c.execute(insert_sql, list(data_dict.values()))
 
+            update_sql = f"UPDATE courses SET 學年度={year}, 學期={semester} WHERE 課程代碼=課程代碼;"
+            c.execute(update_sql)
             # columns_rows.append(data_dict)
         conn.commit()
         conn.close()
@@ -86,11 +88,23 @@ async def selectdb(
 
     cursor.execute(query)
     res = cursor.fetchall()
-    # print(res)
+    print(res)
     select_res = gen_search_res(res)
     conn.commit()
     conn.close()
     return select_res
+
+
+async def selectdb1():
+    conn = sqlite3.connect("database.sqlite3")
+    cursor = conn.cursor()
+    query = "select * from courses limit 1"
+    cursor.execute(query)
+    res = cursor.fetchall()
+    resv = {"year": res[0][0], "semester": res[0][1]}
+    # print("year={}, sem={}".format(resv["year"], resv["semester"]))
+
+    return resv
 
 
 async def deleteTable(tablenm="courses"):
@@ -106,7 +120,7 @@ if __name__ == "__main__":
     start_time = time.time()  # 記錄開始時間
     # asyncio.run(deleteTable())
     # asyncio.run(load_into_db(year="112", semester="1"))
-    select_res = asyncio.run(selectdb())
+    select_res = asyncio.run(selectdb1())
 
     # print(select_res[0])
 
