@@ -3,6 +3,7 @@ import asyncio
 from bs4 import BeautifulSoup
 import sqlite3
 import time
+from util import gen_search_res
 
 
 async def load_into_db(year="112", semester="2"):
@@ -10,7 +11,7 @@ async def load_into_db(year="112", semester="2"):
         "POST",
         "https://webap0.ncue.edu.tw/DEANV2/Other/OB010",
         headers={"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"},
-        data="sel_cls_branch=D&sel_cls_branch=&sel_scr_english=&sel_scr_english=&sel_SCR_IS_DIS_LEARN=&sel_SCR_IS_DIS_LEARN=&sel_yms_year=112&sel_yms_year=112&sel_yms_smester=2&sel_yms_smester=2&scr_selcode=&sel_cls_id=&sel_cls_id=&sel_sct_week=&sel_sct_week=&sub_name=&emp_name=&X-Requested-With=XMLHttpRequest",
+        data=f"sel_cls_branch=D&sel_scr_english=&sel_SCR_IS_DIS_LEARN=&sel_yms_year={year}&sel_yms_smester={semester}&scr_selcode=&sel_cls_id=&sel_sct_week=&sub_name=&emp_name=&X-Requested-With=XMLHttpRequest",
     ) as day_course_response:
         html_data = await day_course_response.text()
         day_course_rows = BeautifulSoup(
@@ -60,7 +61,10 @@ async def selectdb(
     conn = sqlite3.connect("database.sqlite3")
     cursor = conn.cursor()
     query = """
-        SELECT * FROM courses
+        SELECT
+        ROW_NUMBER() OVER (ORDER BY 序號) AS 查詢序號,
+        *
+        FROM courses
         WHERE 1=1
     """
 
@@ -82,11 +86,11 @@ async def selectdb(
 
     cursor.execute(query)
     res = cursor.fetchall()
-    print(res)
-    # select_res = gen_search_res(res)
+    # print(res)
+    select_res = gen_search_res(res)
     conn.commit()
     conn.close()
-    # return select_res
+    return select_res
 
 
 async def deleteTable(tablenm="courses"):
@@ -100,9 +104,12 @@ async def deleteTable(tablenm="courses"):
 
 if __name__ == "__main__":
     start_time = time.time()  # 記錄開始時間
-    asyncio.run(load_into_db(year="112", semester="2"))
-    # asyncio.run(selectdb())
     # asyncio.run(deleteTable())
+    # asyncio.run(load_into_db(year="112", semester="1"))
+    select_res = asyncio.run(selectdb())
+
+    print(select_res[0])
+
     end_time = time.time()  # 記錄結束時間
     print("Execution time: {:.2f} seconds".format(
         end_time - start_time))  # 顯示執行時間

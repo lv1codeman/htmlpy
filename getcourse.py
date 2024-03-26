@@ -4,7 +4,7 @@ from util import (
     get_num_column_dict,
     is_contain_chinese,
     getSyllabusColumns,
-    gen_search_res,
+    gen_search_res_forgetcourse,
 )
 import sqlite3
 
@@ -280,7 +280,7 @@ def selectdb(
 
     cursor.execute(query)
     res = cursor.fetchall()
-    select_res = gen_search_res(res)
+    select_res = gen_search_res_forgetcourse(res)
     conn.commit()
     conn.close()
     return select_res

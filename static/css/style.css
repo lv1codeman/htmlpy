@@ -76,6 +76,14 @@ th:nth-child(3) {
   width: 10rem;
 }
 
+.separator {
+  grid-column: 1 / -1;
+  /* 跨越整行 */
+  border-bottom: 1px solid #3f3f3fe3;
+  /* 分隔线样式 */
+  margin-bottom: 10px;
+  /* 可选的额外间距 */
+}
 
 #hint {
   padding-left: 20px;

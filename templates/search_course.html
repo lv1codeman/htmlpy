@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search Page</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../static/css/style.css">
+</head>
+
+<body>
+  <div class="container">
+    <p>請先取得學年學期的資料，再開始查詢，否則預設為112學年度第2學期的資料。</p>
+    <div class="grid-container">
+      <div class="grid-item">
+        <label for="year">學年度</label>
+        <select id="year">
+          <!-- 由OB010導入 -->
+          <option value></option>
+          <option value="113">113</option>
+          <option value="112" selected>112</option>
+          <option value="111">111</option>
+          <option value="110">110</option>
+          <option value="109">109</option>
+          <option value="108">108</option>
+          <option value="107">107</option>
+        </select>
+      </div>
+      <div class="grid-item">
+        <label for="semester">學期</label>
+        <select id="semester">
+          <!-- 由OB010導入 -->
+          <option value></option>
+          <option value="2" selected>2</option>
+          <option value="1">1</option>
+        </select>
+      </div>
+      <div class="grid-item">
+        <label id="dataTimeIndicator" for="gatherBtn">目前資料為112-2</label>
+        <button class="btn btn-primary" id="gatherBtn">取得課程資料</button>
+      </div>
+      <div class="separator"></div>
+      <div class="grid-item">
+        <label for="crsclass">開課班別</label>
+        <select id="crsclass">
+          <!-- 由OB010導入 -->
+          <option value></option>
+          <option value="輔碩二">輔碩二</option>
+        </select>
+      </div>
+      <div class="grid-item">
+        <label for="crslimit">可跨班系</label>
+        <select id="crslimit">
+          <!-- 由OB010導入 -->
+          <option value></option>
+          <option value="限本班">限本班</option>
+          <option value="限本系">限本系</option>
+          <option value="可跨班系">可跨班系</option>
+        </select>
+      </div>
+      <div class="grid-item">
+        <label for="week">上課時間</label>
+        <select id="week">
+          <option value></option>
+          <option value="1">星期一</option>
+          <option value="1">星期一</option>
+          <option value="2">星期二</option>
+          <option value="3">星期三</option>
+          <option value="4">星期四</option>
+          <option value="5">星期五</option>
+          <option value="6">星期六</option>
+
+        </select>
+      </div>
+      <div class="grid-item">
+        <label for="isAllEng">全英語授課</label>
+        <select id="isAllEng">
+          <option value></option>
+          <option value="option1">是</option>
+          <option value="option2">否</option>
+        </select>
+      </div>
+      <div class="grid-item">
+        <label for="isDisLearn">遠距課程</label>
+        <select id="isDisLearn">
+          <option value></option>
+          <option value="option1">是</option>
+          <option value="option2">否</option>
+        </select>
+      </div>
+      <div class="grid-item">
+        <label for="crsid">課程代碼</label>
+        <input type="text" id="crsid">
+      </div>
+      <div class="grid-item">
+        <label for="crsnm">課程名稱</label>
+        <input type="text" id="crsnm">
+      </div>
+      <div class="grid-item">
+        <label for="tchnm">教師姓名 羅家玲</label>
+        <input type="text" id="tchnm">
+      </div>
+    </div>
+    <div style="display: ruby-text;">
+      <button class="btn btn-success" id="searchBtn">Search</button>
+      <button class="btn btn-secondary" id="clearBtn">Clear</button>
+
+      <div id="hint"></div>
+    </div>
+    <table id="resultTable">
+      <thead>
+        <tr>
+          <th>序號</th>
+          <th>課程代碼</th>
+          <th>開課班別</th>
+          <th>課程名稱</th>
+          <th>教學大綱</th>
+          <th>課程性質</th>
+          <th>課程性質2</th>
+          <th>全英授課</th>
+          <th>學分</th>
+          <th>教師姓名</th>
+          <th>上課大樓</th>
+          <th>上課教室</th>
+          <th>上限人數</th>
+          <th>登記人數</th>
+          <th>選上人數</th>
+          <th>可跨班</th>
+          <th>備註</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Dynamic content will be added here -->
+      </tbody>
+    </table>
+    <script>
+      $(document).ready(function () {
+        $('#resultTable').hide()
+        $('#clearBtn').click(function () {
+          $('#resultTable').hide();
+          $('#year,#semester,#crsclass,#crslimit,#week,#isAllEng,#isDisLearn').val('');
+          $('#crsid,#crsnm,#tchnm').val('');
+          $('#hint').text('');
+        });
+
+        $('#gatherBtn').click(function () {
+          var year = $('#year').find(':selected').text();
+          var semester = $('#semester').find(':selected').text();
+          var dataJSON = {};
+          dataJSON["year"] = year;
+          dataJSON["semester"] = semester;
+          $('*').css('cursor', 'wait');
+          $('*').css('pointer-events', 'none');
+          $('#hint').text('正在從OB010讀取資料(約需15秒左右等待時間)...');
+          $('#hint').css('color', 'orange');
+          console.log('start gathering data...')
+          $.ajax({
+            url: '/getdata',
+            type: 'POST',
+            data: JSON.stringify(dataJSON), // 将JavaScript对象转换为JSON字符串
+            contentType: "application/json; charset=utf-8", // 指定请求内容类型为JSON
+            dataType: "json", // 指定响应数据类型为JSON
+            success: function (data) {
+              console.log(data.message);
+              $('*').css('cursor', 'auto');
+              $('*').css('pointer-events', 'auto');
+              $('button').css('cursor', 'pointer');
+              $('#hint').css('color', 'green');
+              $('#hint').text('已從OB010讀取所有課程。');
+              console.log(' 已從OB010讀取所有課程。')
+
+
+              $('#dataTimeIndicator').text('目前資料為' + year + '-' + semester);
+            },
+            error: function (xhr, status, error) {
+              console.error('SIXER-Error:', error);
+            }
+          });
+        });
+        $('#searchBtn').click(function () {
+          var dataJSON = {};
+          dataJSON["year"] = $('#year').find(':selected').text();
+          dataJSON["semester"] = $('#semester').find(':selected').text();
+          dataJSON["crsclass"] = $('#crsclass').find(':selected').text();
+          dataJSON["crslimit"] = $('#crslimit').find(':selected').text();
+          dataJSON["week"] = $('#week').find(':selected').text();
+          dataJSON["isAllEng"] = $('#isAllEng').find(':selected').text();
+          dataJSON["isDisLearn"] = $('#isDisLearn').find(':selected').text();
+          dataJSON["crsid"] = $('#crsid').val();
+          dataJSON["crsnm"] = $('#crsnm').val();
+          dataJSON["tchnm"] = $('#tchnm').val();
+          $('#resultTable').show()
+          $.ajax({
+            url: '/search',
+            type: 'POST',
+            data: JSON.stringify(dataJSON),
+            dataType: "json",
+            contentType: "application/json;charset=utf-8",
+            success: function (data) {
+              var tableBody = $('#resultTable tbody');
+              tableBody.empty();
+              console.log(data)
+              $('#hint').text('共有' + data.length + '筆');
+              data.forEach(function (item) {
+                var row =
+                  '<tr>' +
+                  '<td>' + item['查詢序號'] + '</td>' +
+                  '<td>' + item['課程代碼'] + '</td>' +
+                  '<td>' + item['開課班別'] + '</td>' +
+                  '<td>' + item['課程名稱'] + '</td>' +
+                  '<td>' + item['教學大綱'] + '</td>' +
+                  '<td>' + item['課程性質'] + '</td>' +
+                  '<td>' + item['課程性質2'] + '</td>' +
+                  '<td>' + item['全英語授課'] + '</td>' +
+                  '<td>' + item['學分'] + '</td>' +
+                  '<td>' + item['教師姓名'] + '</td>' +
+                  '<td>' + item['上課大樓'] + '</td>' +
+                  '<td>' + item['上課教室'] + '</td>' +
+                  '<td>' + item['上限人數'] + '</td>' +
+                  '<td>' + item['登記人數'] + '</td>' +
+                  '<td>' + item['選上人數'] + '</td>' +
+                  '<td>' + item['可跨班'] + '</td>' +
+                  '<td>' + item['備註'] + '</td>' +
+                  '</tr>';
+                tableBody.append(row);
+              });
+            }
+          });
+        });
+      });
+    </script>
+  </div>
+</body>
+
+</html>

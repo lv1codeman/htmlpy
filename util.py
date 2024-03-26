@@ -13,7 +13,7 @@ def is_contain_chinese(word):
     return True if match else False
 
 
-def gen_search_res(res):
+def gen_search_res_forgetcourse(res):
     keys = [
         "課程代碼",
         "開課班別",
@@ -41,7 +41,40 @@ def gen_search_res(res):
     # search_res: 把每筆re加入search_res這個list，做成一個dict array
     search_res = []
     for res_each in range(0, len(res)):
-        search_res_each = {key: value for key, value in zip(keys, res[res_each])}
+        search_res_each = {key: value for key,
+                           value in zip(keys, res[res_each])}
+        search_res.append(search_res_each)
+    return search_res
+
+
+def gen_search_res(res):
+    keys = [
+        "查詢序號",
+        "序號",
+        "課程代碼",
+        "開課班別",
+        "課程名稱",
+        "教學大綱",
+        "課程性質",
+        "課程性質2",
+        "全英語授課",
+        "學分",
+        "教師姓名",
+        "上課大樓",
+        "上課教室",
+        "上限人數",
+        "登記人數",
+        "選上人數",
+        "可跨班",
+        "備註",
+    ]
+    # res: 搜尋的結果，資料型態為2維list，計算它的數量即為這次搜尋的筆數
+    # search_res_each: 將每筆資料存成dict
+    # search_res: 把每筆re加入search_res這個list，做成一個dict array
+    search_res = []
+    for res_each in range(0, len(res)):
+        search_res_each = {key: value for key,
+                           value in zip(keys, res[res_each])}
         search_res.append(search_res_each)
     return search_res
 
@@ -77,7 +110,8 @@ def getSyllabusColumns(result, hasCHT, hasENG):
             output[1] = result.find("a").text.strip()
         else:
             output[0] = result.find("a").text.strip()
-            output[1] = result.find("a").next_sibling.next_sibling.next_sibling.strip()
+            output[1] = result.find(
+                "a").next_sibling.next_sibling.next_sibling.strip()
     return output
 
 
